@@ -3,15 +3,15 @@
 import os,sys,requests,argparse
 
 
-my_parser = argparse.ArgumentParser(description="Restfull client")
+my_parser = argparse.ArgumentParser(description="Restful client")
 
-my_parser.add_argument('uri',metavar='uri',type=str,help='Uri to make the request')
+my_parser.add_argument('method', metavar='{get, post}',type=str, help='Request method')
 
-my_parser.add_argument('method', metavar='method',type=str, help='Type of http Request method')
+my_parser.add_argument('uri',metavar='endpoint',type=str,help='Request endpoint URI fragment')
 
-my_parser.add_argument('-o','--output',action='store',help='write the output')
+my_parser.add_argument('-d','--data', action='store',required= False,help='Data to send with request')
 
-my_parser.add_argument('-d','--data', action='store',required= False,help='data of post request in json format')
+my_parser.add_argument('-o','--output',action='store',help='Output to .json or .csv file (default: dump to stdout)')
 
 args = my_parser.parse_args()
 
@@ -19,18 +19,18 @@ url_base = 'https://jsonplaceholder.typicode.com'
 
 
 class Request():
-    global restfull
+    global restful
     def __init__(self):
-        self.restfull = Restfull()
+        self.restful = Restful()
 
     def request(self,uri,method,data):
         method = method.upper()
         if method == 'GET':
-            self.restfull.get(url_base+uri)
+            self.restful.get(url_base+uri)
         elif method == 'POST':
-            self.restfull.post(url_base+uri,data)
+            self.restful.post(url_base+uri,data)
 
-class Restfull():
+class Restful():
 
     def post(self,uri, data):
         r = requests.post(uri,data=data)
