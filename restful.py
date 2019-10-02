@@ -15,6 +15,8 @@ my_parser.add_argument('-d','--data', action='store',required= False,help='data 
 
 args = my_parser.parse_args()
 
+url_base = 'https://jsonplaceholder.typicode.com'
+
 
 class Request():
     global restfull
@@ -24,9 +26,9 @@ class Request():
     def request(self,uri,method,data):
         method = method.upper()
         if method == 'GET':
-            self.restfull.get(uri)
+            self.restfull.get(url_base+uri)
         elif method == 'POST':
-            self.restfull.post(uri,data)
+            self.restfull.post(url_base+uri,data)
 
 class Restfull():
 
@@ -36,7 +38,6 @@ class Restfull():
     
     def get(self,uri):
         r = requests.get(uri)
-        print("jeje")
         print(r.status_code)
 
 req = Request()
