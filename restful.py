@@ -44,4 +44,4 @@ req = Request()
 req.request(args.uri,args.method,args.data)
 
 #para probar
-#python3 restful.py http://yonder.mocklab.io/thing post -d {"id":1,"value":2}
+#python3 restful.py /posts post -d {"id":1,"value":2}
