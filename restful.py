@@ -65,7 +65,7 @@ class Output():
             sourceFile = open(output, 'w')
             print(resp.status_code)
             print(json.dumps(response, indent = 2), file = sourceFile)
-        if output != None and output.endswith('.csv'):
+        elif output != None and output.endswith('.csv'):
             response = resp.json()
             data = []
             if type(response).__name__ == 'dict':
@@ -80,17 +80,16 @@ class Output():
                     values = element.values()
                     filtered = (row if type(row).__name__ != 'str' else row.replace('\n', ' ') for row in values)
                     data.append(filtered)
+                with open(output, 'w') as csvFile:
+                    writer = csv.writer(csvFile, lineterminator='\n')
+                    
+                    writer.writerows(data)
+                csvFile.close()
+                print(resp.status_code)
             else:
                 print(resp.status_code)
                 print('Empty response')
                 sys.exit(1)
-
-            with open(output, 'w') as csvFile:
-                writer = csv.writer(csvFile, lineterminator='\n')
-                
-                writer.writerows(data)
-            csvFile.close()
-            print(resp.status_code)
         else:
             print(resp.status_code)
             print(resp.text)
