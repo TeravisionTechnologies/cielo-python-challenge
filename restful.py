@@ -1,7 +1,11 @@
 #! /usr/bin/env python3
 
-import os,sys,requests,argparse,json
-
+import os
+import sys
+import requests
+import argparse
+import json
+import csv
 
 challenge_parser = argparse.ArgumentParser(description="Restful client")
 
@@ -56,14 +60,40 @@ class Restful():
 
 class Output():
     def write(self, resp, output):
-        response = resp.json()
         if output != None and output.endswith('.json'):
+            response = resp.json()
             sourceFile = open(output, 'w')
+            print(resp.status_code)
             print(json.dumps(response, indent = 2), file = sourceFile)
+        if output != None and output.endswith('.csv'):
+            response = resp.json()
+            data = []
+            if type(response).__name__ == 'dict':
+                data.append(response.keys())
+                values = response.values()
+                filtered = (element if type(element).__name__ != 'str' else element.replace('\n', ' ') for element in values)
+                data.append(filtered)
+            elif type(response).__name__ == 'list':
+                for index, element in enumerate(response):
+                    if index == 0:
+                        data.append(element.keys())
+                    values = element.values()
+                    filtered = (row if type(row).__name__ != 'str' else row.replace('\n', ' ') for row in values)
+                    data.append(filtered)
+            else:
+                print(resp.status_code)
+                print('Empty response')
+                sys.exit(1)
+
+            with open(output, 'w') as csvFile:
+                writer = csv.writer(csvFile, lineterminator='\n')
+                
+                writer.writerows(data)
+            csvFile.close()
             print(resp.status_code)
         else:
-            print(json.dumps(response, indent = 2))
             print(resp.status_code)
+            print(resp.text)
 
 req = Request()
 req.request(args.uri, args.method, args.data, args.output)
